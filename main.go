@@ -52,19 +52,22 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func write(w http.ResponseWriter, r *http.Request) {
-	s := "Chris and I were here"
+	s := "Chris and I were here \n"
 	vcap_services := &VcapServices{}
 	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
 	if err != nil {
 		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
 	}
 	volumePath := vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath
-	err = ioutil.WriteFile(fmt.Sprintf("%s/test.txt", volumePath), []byte(s), os.ModePerm)
+	f, err := os.OpenFile(fmt.Sprintf("%s/test.txt", volumePath), os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
-		fmt.Fprintln(w, err)
-		return
+	    panic(err)
 	}
-	fmt.Fprintln(w, "saved %s to %s successfully", s, volumePath)
+	defer f.Close()
+	if _, err = f.WriteString(s); err != nil {
+	    panic(err)
+	}
+	fmt.Fprintln(w, fmt.Sprintf("saved %s to %s successfully", s, volumePath))
 }
 
 func main() {
