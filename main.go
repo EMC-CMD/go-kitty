@@ -10,7 +10,7 @@ import (
 
 
 type VcapServices struct {
-	ScaleioServiceBrokerVf []struct {
+	EMCPersistenceCI []struct {
 		Credentials struct {
 			Database string `json:"database"`
 			Host string `json:"host"`
@@ -29,7 +29,7 @@ type VcapServices struct {
 		Plan string `json:"plan"`
 		Name string `json:"name"`
 		Tags []interface{} `json:"tags"`
-	} `json:"scaleio-service-broker-vf"`
+	} `json:"EMC-Persistence-CI"`
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
 	}
-	volumePath := vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath
+	volumePath := vcap_services.EMCPersistenceCI[0].VolumeMounts[0].ContainerPath
   fmt.Fprintln(w, fmt.Sprintf("%s",volumePath))
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/test.txt", volumePath))
 	if err != nil {
@@ -58,7 +58,7 @@ func write(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
 	}
-	volumePath := vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath
+	volumePath := vcap_services.EMCPersistenceCI[0].VolumeMounts[0].ContainerPath
 	f, err := os.OpenFile(fmt.Sprintf("%s/test.txt", volumePath), os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 	    panic(err)
