@@ -46,7 +46,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
 	}
-  fmt.Fprintln(w, fmt.Sprintf("%+v",vcap_services))
+  fmt.Fprintln(w, fmt.Sprintf("%+v",vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath))
 	fmt.Fprintln(w, "VCAP_SERVICES:", os.Getenv("VCAP_SERVICES"))
 }
 
