@@ -8,9 +8,6 @@ import (
 	"encoding/json"
 )
 
-const FILEPATH = "/mnt/data/goapp.txt"
-
-
 
 type VcapServices struct {
 	ScaleioServiceBrokerVf []struct {
@@ -37,21 +34,16 @@ type VcapServices struct {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 
-	//serviceInstance := os.Getenv("CF_SERVICE_NUM")
 	fmt.Fprintln(w, "hello world")
-	//vcapServices := os.Getenv("VCAP_SERVICES")
-	//volumePath := vcapServices["scaleio-service-broker-vf"].([]interface{})[0].(map[string]interface{})["volume_mounts"].([]interface{})[0].(map[string]interface{})["container_path"]
+
 	vcap_services := &VcapServices{}
 	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
 	if err != nil {
 		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
 	}
-  fmt.Fprintln(w, fmt.Sprintf("%+v",vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath))
-	fmt.Fprintln(w, "VCAP_SERVICES:", os.Getenv("VCAP_SERVICES"))
-}
-
-func read(w http.ResponseWriter, r *http.Request) {
-	content, err := ioutil.ReadFile(FILEPATH)
+	volumePath := vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath
+  fmt.Fprintln(w, fmt.Sprintf("%s",volumePath))
+	content, err := ioutil.ReadFile(fmt.Sprintf("%s/test.txt", volumePath))
 	if err != nil {
 		fmt.Fprintln(w, err)
 		return
@@ -61,16 +53,21 @@ func read(w http.ResponseWriter, r *http.Request) {
 
 func write(w http.ResponseWriter, r *http.Request) {
 	s := "Chris and I were here"
-	err := ioutil.WriteFile(FILEPATH, []byte(s), os.ModePerm)
+	vcap_services := &VcapServices{}
+	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
+	if err != nil {
+		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
+	}
+	volumePath := vcap_services.ScaleioServiceBrokerVf[0].VolumeMounts[0].ContainerPath
+	err = ioutil.WriteFile(fmt.Sprintf("%s/test.txt", volumePath), []byte(s), os.ModePerm)
 	if err != nil {
 		fmt.Fprintln(w, err)
 		return
 	}
-	fmt.Fprintln(w, "saved %s to %s successfully", s, FILEPATH)
+	fmt.Fprintln(w, "saved %s to %s successfully", s, volumePath)
 }
 
 func main() {
-	http.HandleFunc("/read", read)
 	http.HandleFunc("/write", write)
 	http.HandleFunc("/", handler)
 
