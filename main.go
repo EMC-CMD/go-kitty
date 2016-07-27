@@ -33,8 +33,8 @@ type VcapServices struct {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintln(w, "hello world")
+  fmt.Fprintln(w, fmt.Sprintf("CF IP: %s",os.Getenv("CF_INSTANCE_ADDR")))
+	fmt.Fprintln(w, fmt.Sprintf("CF Instance Number: %s",os.Getenv("CF_INSTANCE_INDEX")))
 
 	vcap_services := &VcapServices{}
 	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
