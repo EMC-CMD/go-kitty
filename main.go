@@ -48,7 +48,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 		return
 	}
-	fmt.Fprintln(w, "file content: %s", string(content))
+	fmt.Fprintln(w, fmt.Sprintf("file content: %s", string(content)))
 }
 
 func write(w http.ResponseWriter, r *http.Request) {
