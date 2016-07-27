@@ -52,7 +52,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func write(w http.ResponseWriter, r *http.Request) {
-	s := "Chris and I were here \n"
+	instanceIP := os.Getenv("CF_INSTANCE_ADDR")
+	instanceIndex := os.Getenv("CF_INSTANCE_INDEX")
+	fmt.Fprintln(w, fmt.Sprintf("CF IP: %s",instanceIP))
+	fmt.Fprintln(w, fmt.Sprintf("CF Instance Number: %s",instanceIndex))
+
+	s := fmt.Sprintf("BOT was here and wrote from instanceID %s, with IP %s! \n", instanceIndex, instanceIP)
 	vcap_services := &VcapServices{}
 	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
 	if err != nil {
