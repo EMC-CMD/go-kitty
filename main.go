@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"encoding/json"
 )
 
 const FILEPATH = "/mnt/data/goapp.txt"
