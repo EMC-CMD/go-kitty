@@ -1,0 +1,6 @@
+---
+applications:
+- name: goapp
+  memory: 256M
+  command: git clone https://github.com/kaleo211/hello.git && cd hello && mkdir -p app/tmp/ && go run main.go
+
