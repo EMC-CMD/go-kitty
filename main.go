@@ -40,11 +40,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	//serviceInstance := os.Getenv("CF_SERVICE_NUM")
 	fmt.Fprintln(w, "hello world")
 	vcap_services := &VcapServices{}
-  err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
-	if err != nil {
-		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
-	}
-  fmt.Fprintln(w, vcap_services.serviceName[0].VolumeMounts[0].ContainerPath)
+	volumePath := vcapServices["scaleio-service-broker-vf"].([]interface{})[0].(map[string]interface{})["volume_mounts"].([]interface{})[0].(map[string]interface{})["container_path"]
+  // err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
+	// if err != nil {
+	// 	fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
+	// }
+  fmt.Fprintln(w, volumePath)//vcap_services.serviceName[0].VolumeMounts[0].ContainerPath)
 	fmt.Fprintln(w, "VCAP_SERVICES:", os.Getenv("VCAP_SERVICES"))
 }
 
