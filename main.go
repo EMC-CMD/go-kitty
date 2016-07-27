@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-  "encoding/json"
 )
 
 const FILEPATH = "/mnt/data/goapp.txt"
@@ -13,7 +12,7 @@ const FILEPATH = "/mnt/data/goapp.txt"
 
 
 type VcapServices struct {
-	serviceName []struct {
+	ScaleioServiceBrokerVf []struct {
 		Credentials struct {
 			Database string `json:"database"`
 			Host string `json:"host"`
@@ -32,20 +31,21 @@ type VcapServices struct {
 		Plan string `json:"plan"`
 		Name string `json:"name"`
 		Tags []interface{} `json:"tags"`
-	}
+	} `json:"scaleio-service-broker-vf"`
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 
 	//serviceInstance := os.Getenv("CF_SERVICE_NUM")
 	fmt.Fprintln(w, "hello world")
+	//vcapServices := os.Getenv("VCAP_SERVICES")
+	//volumePath := vcapServices["scaleio-service-broker-vf"].([]interface{})[0].(map[string]interface{})["volume_mounts"].([]interface{})[0].(map[string]interface{})["container_path"]
 	vcap_services := &VcapServices{}
-	volumePath := vcapServices["scaleio-service-broker-vf"].([]interface{})[0].(map[string]interface{})["volume_mounts"].([]interface{})[0].(map[string]interface{})["container_path"]
-  // err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
-	// if err != nil {
-	// 	fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
-	// }
-  fmt.Fprintln(w, volumePath)//vcap_services.serviceName[0].VolumeMounts[0].ContainerPath)
+	err := json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
+	if err != nil {
+		fmt.Fprintln(w, fmt.Sprintf("Life is wrong and the unmarshal failed! %s", err))
+	}
+  fmt.Fprintln(w, vcap_services)
 	fmt.Fprintln(w, "VCAP_SERVICES:", os.Getenv("VCAP_SERVICES"))
 }
 
