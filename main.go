@@ -5,12 +5,43 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+  "encoding/json"
 )
 
 const FILEPATH = "/mnt/data/goapp.txt"
 
+
+
+type VcapServices struct {
+	serviceName []struct {
+		Credentials struct {
+			Database string `json:"database"`
+			Host string `json:"host"`
+			Password string `json:"password"`
+			Port int `json:"port"`
+			URI string `json:"uri"`
+			Username string `json:"username"`
+		} `json:"credentials"`
+		SyslogDrainURL interface{} `json:"syslog_drain_url"`
+		VolumeMounts []struct {
+			ContainerPath string `json:"container_path"`
+			Mode string `json:"mode"`
+		} `json:"volume_mounts"`
+		Label string `json:"label"`
+		Provider interface{} `json:"provider"`
+		Plan string `json:"plan"`
+		Name string `json:"name"`
+		Tags []interface{} `json:"tags"`
+	}
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
+
+	//serviceInstance := os.Getenv("CF_SERVICE_NUM")
 	fmt.Fprintln(w, "hello world")
+	vcap_services := VcapServices{}
+  json.Unmarshal([]byte(os.Getenv("VCAP_SERVICES")), &vcap_services)
+  fmt.Println(vcap_services)
 	fmt.Fprintln(w, "VCAP_SERVICES:", os.Getenv("VCAP_SERVICES"))
 }
 
