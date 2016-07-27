@@ -2,5 +2,5 @@
 applications:
 - name: goapp
   memory: 256M
-  command: git clone https://github.com/kaleo211/hello.git && cd hello && mkdir -p app/tmp/ && go run main.go
+  command: git clone https://github.com/emc-cmd/go-kitty.git && cd go-kitty && mkdir -p app/tmp/ && go run main.go
 
